@@ -1,27 +1,12 @@
-import { addBuilding } from "./modules/building"
-import { setSceneOrientation } from "./modules/pivot"
-import { addSocialLink } from "./modules/socialLink"
-import { addVideoScreen } from "./modules/videoScreen"
-import { createDispenser } from "./booth/dispenser"
-import { addLogo } from "./modules/logo"
-import { addWearable } from "./modules/wearable"
 
-import { addBuilding1 } from "./modules/building1"
-import { setSceneOrientation1 } from "./modules/pivot1"
-import { addSocialLink1 } from "./modules/socialLink1"
-import { addVideoScreen1 } from "./modules/videoScreen1"
-import { addLogo1 } from "./modules/logo1"
-import { addWearable1 } from "./modules/wearable1"
+import { createDispenser } from "./booth/dispenser"
 
 import { WearablesScanner } from './scanner'
 import Door from './door'
 
 import Script11 from "models/c4a799c1-9ef8-4787-914e-4f8c15357881/src/item"
 import Script22 from "models/6ef2baf2-3d2e-4093-b22b-34c2b6bb0e7b/src/item"
-
-import { PianoKey, keys } from './pianoKey'
 import resources from './resources'
-import { createCoin } from './coin'
 
 import { createChannel } from '../node_modules/decentraland-builder-scripts/channel'
 import { createInventory } from '../node_modules/decentraland-builder-scripts/inventory'
@@ -29,17 +14,8 @@ import Script1 from "models/wearables/src/item"
 import Script100 from "models/7d669c08-c354-45e4-b3a3-c915c8fd6b6e/src/item"
 
 import utils1 from "../node_modules/decentraland-ecs-utils/index"
-import { NFT } from "./nft"
-import { data } from "./data"
-import { InfoPanel } from "./infoPanel"
 
 import * as utils from "@dcl/ecs-scene-utils"
-import { Arcade } from "./gameObjects/arcade"
-import { loadPlayer, unloadPlayer } from "./player"
-import { loadAtariLevel, loadAtariBricks, unloadAtariBricks } from "./gameLogic/atariLevel"
-import { loadBitcoinLevel, loadBitcoinBricks, unloadBitcoinBricks } from "./gameLogic/bitcoinLevel"
-import { loadEthereumLevel, loadEthereumBricks, unloadEthereumBricks } from "./gameLogic/ethereumLevel"
-import { loadDecentralandLevel, loadDecentralandBricks, unloadDecentralandBricks } from "./gameLogic/decentralandLevel"
 import { GameManager } from "./gameManager"
 
 const _scene = new Entity('_scene')
@@ -51,22 +27,6 @@ const transform = new Transform({
 })
 _scene.addComponentOrReplace(transform)
 
-//--------------------------------------------------------Shop1--------------------------------------------------------------------------------
-// setSceneOrientation()
-// addBuilding()
-// addLogo()
-// addSocialLink()
-// addVideoScreen()
-// addWearable()
-//---------------------------------------------------------Shop2------------------------------------------------------------------------
-// setSceneOrientation1()
-// addBuilding1()
-// addLogo1()
-// addSocialLink1()
-// addVideoScreen1()
-// addWearable1()
-
-//-----------------------------------------------------flooring starts------------------------------------------------------------------
 const entity = new Entity('entity')
 engine.addEntity(entity)
 entity.setParent(_scene)
@@ -207,142 +167,6 @@ createDispenser(
 )
 
 
-// Base
-// const base = new Entity()
-// base.addComponent(new GLTFShape("models/baseLight.glb"))
-// base.addComponent(new Transform({ scale: new Vector3(2, 1, 2) }))
-// engine.addEntity(base)
-
-// Atari arcade cabinet
-const arcadeCabinetAtari = new Arcade(new GLTFShape("models/arcadeCabinetAtari.glb"), new Transform({ 
-  position: new Vector3(2,0,46)
-}))
-
-// Breakout atari
-const atariGameTransform = new Entity()
-atariGameTransform.addComponent(new Transform({ position: new Vector3(-0.48, 1.38, -0.155) }))
-atariGameTransform.getComponent(Transform).scale.setAll(0.03)
-atariGameTransform.getComponent(Transform).rotate(Vector3.Left(), 75)
-atariGameTransform.setParent(arcadeCabinetAtari)
-let arcadeCabinetAtariTrigger = new utils.TriggerBoxShape(new Vector3(4, 4, 4), new Vector3(0, 2, -2))
-loadAtariLevel(atariGameTransform)
-
-arcadeCabinetAtari.addComponent(
-  new utils.TriggerComponent(arcadeCabinetAtariTrigger, {
-    onCameraEnter: () => {
-      if (!GameManager.hasGameLoaded) {
-        loadAtariBricks(atariGameTransform)
-        loadPlayer(atariGameTransform, arcadeCabinetAtari)
-      }
-    },
-    onCameraExit: () => {
-      if (GameManager.hasGameLoaded) {
-        unloadAtariBricks()
-        unloadPlayer()
-      }
-    },
-    enableDebug: false,   
-  })
-)
-
-// Bitcoin arcade cabinet
-const arcadeCabinetBitcoin = new Arcade(new GLTFShape("models/arcadeCabinetBitcoin.glb"), new Transform({ 
-  position: new Vector3(6,0.01,46)
- }))
-// arcadeCabinetBitcoin.getComponent(Transform).rotate(Vector3.Up(), -90)
-
-// Breakout bitcoin
-const bitcoinGameTransform = new Entity()
-bitcoinGameTransform.addComponent(new Transform({ position: new Vector3(-0.48, 1.38, -0.155) }))
-bitcoinGameTransform.getComponent(Transform).scale.setAll(0.03)
-bitcoinGameTransform.getComponent(Transform).rotate(Vector3.Left(), 75)
-bitcoinGameTransform.setParent(arcadeCabinetBitcoin)
-let arcadeCabinetBitcoinTrigger = new utils.TriggerBoxShape(new Vector3(4, 4, 4), new Vector3(2, 2, 0))
-loadBitcoinLevel(bitcoinGameTransform)
-
-arcadeCabinetBitcoin.addComponent(
-  new utils.TriggerComponent(arcadeCabinetBitcoinTrigger, {
-    onCameraEnter: () => {
-      if (!GameManager.hasGameLoaded) {
-        loadBitcoinBricks(bitcoinGameTransform)
-        loadPlayer(bitcoinGameTransform, arcadeCabinetBitcoin)
-      }
-    },
-    onCameraExit: () => {
-      if (GameManager.hasGameLoaded) {
-        unloadBitcoinBricks()
-        unloadPlayer()
-      }
-    },
-    enableDebug: false,
-  })
-)
-
-// Ethereum arcade cabinet
-const arcadeCabinetEthereum = new Arcade(new GLTFShape("models/arcadeCabinetEthereum.glb"), new Transform({ 
-  position: new Vector3(10,0.01,46)
-}))
-// arcadeCabinetEthereum.getComponent(Transform).rotate(Vector3.Up(), 180)
-
-// Breakout ethereum
-const ethereumGameTransform = new Entity()
-ethereumGameTransform.addComponent(new Transform({ position: new Vector3(-0.48, 1.38, -0.155) }))
-ethereumGameTransform.getComponent(Transform).scale.setAll(0.03)
-ethereumGameTransform.getComponent(Transform).rotate(Vector3.Left(), 75)
-ethereumGameTransform.setParent(arcadeCabinetEthereum)
-let arcadeCabinetEthereumTrigger = new utils.TriggerBoxShape(new Vector3(4, 4, 4), new Vector3(0, 2, 2))
-loadEthereumLevel(ethereumGameTransform)
-
-arcadeCabinetEthereum.addComponent(
-  new utils.TriggerComponent(arcadeCabinetEthereumTrigger, {
-    onCameraEnter: () => {
-      if (!GameManager.hasGameLoaded) {
-        loadEthereumBricks(ethereumGameTransform)
-        loadPlayer(ethereumGameTransform, arcadeCabinetEthereum)
-      }
-    },
-    onCameraExit: () => {
-      if (GameManager.hasGameLoaded) {
-        unloadEthereumBricks()
-        unloadPlayer()
-      }
-    },
-    enableDebug: false,
-  })
-)
-
-// Decentraland arcade cabinet
-const arcadeCabinetDecentraland = new Arcade(new GLTFShape("models/arcadeCabinetDecentraland.glb"), new Transform({ 
-  position: new Vector3(14,0.01,46)
-}))
-// arcadeCabinetDecentraland.getComponent(Transform).rotate(Vector3.Up(), 90)
-
-// Breakout decentraland
-const decentralandGameTransform = new Entity()
-decentralandGameTransform.addComponent(new Transform({ position: new Vector3(-0.48, 1.38, -0.155) }))
-decentralandGameTransform.getComponent(Transform).scale.setAll(0.03)
-decentralandGameTransform.getComponent(Transform).rotate(Vector3.Left(), 75)
-decentralandGameTransform.setParent(arcadeCabinetDecentraland)
-let arcadeCabinetDecentralandTrigger = new utils.TriggerBoxShape(new Vector3(4, 4, 4), new Vector3(-2, 2, 0))
-loadDecentralandLevel(decentralandGameTransform)
-
-arcadeCabinetDecentraland.addComponent(
-  new utils.TriggerComponent(arcadeCabinetDecentralandTrigger, {
-    onCameraEnter: () => {
-      if (!GameManager.hasGameLoaded) {
-        loadDecentralandBricks(decentralandGameTransform)
-        loadPlayer(decentralandGameTransform, arcadeCabinetDecentraland)
-      }
-    },
-    onCameraExit: () => {
-      if (GameManager.hasGameLoaded) {
-        unloadDecentralandBricks()
-        unloadPlayer()
-      }
-    },
-    enableDebug: false,
-  })
-)
 
 
 //------------------------------------------------------------QR Codes code---------------------------------------------------------
@@ -498,108 +322,6 @@ baseScene.addComponent(
 )
 engine.addEntity(baseScene)
 
-// UI Elements
-const canvas = new UICanvas()
-const infoPanel = new InfoPanel(canvas)
-
-// NFTs
-const makersPlaceNFT = new NFT(
-  new NFTShape("ethereum://" + data[0].address),
-  new Transform({
-    position: new Vector3(-11, 2.5, 40),
-    scale: new Vector3(4, 4, 4),
-  }),
-  new Color3(0.0, 1.0, 1.5),
-  data[0].id,
-  infoPanel
-)
-
-const cryptoKittiesNFT = new NFT(
-  new NFTShape("ethereum://" + data[1].address),
-  new Transform({
-    position: new Vector3(-8, 2.5, 40),
-    scale: new Vector3(4, 4, 4),
-  }),
-  new Color3(1.5, 1.5, 0.0),
-  data[1].id,
-  infoPanel
-)
-
-const knownOriginNFT = new NFT(
-  new NFTShape("ethereum://" + data[2].address),
-  new Transform({
-    position: new Vector3(-5, 2.5, 40),
-    scale: new Vector3(4, 4, 4),
-  }),
-  new Color3(1.5, 0.5, 0.0),
-  data[2].id,
-  infoPanel
-)
-
-const axieInfinityNFT = new NFT(
-  new NFTShape("ethereum://" + data[3].address),
-  new Transform({
-    position: new Vector3(-11, 2.5, 40),
-    scale: new Vector3(5, 5, 5),
-  }),
-  new Color3(1.5, 0.8, 0.8),
-  data[3].id,
-  infoPanel
-)
-axieInfinityNFT.getComponent(Transform).scale.setAll(0)
-
-const chainGuardiansNFT = new NFT(
-  new NFTShape("ethereum://" + data[4].address),
-  new Transform({
-    position: new Vector3(-8, 2.5, 40),
-    scale: new Vector3(4, 4, 4),
-  }),
-  new Color3(0.0, 1.0, 1.5),
-  data[4].id,
-  infoPanel
-)
-chainGuardiansNFT.getComponent(Transform).scale.setAll(0)
-
-const myCryptoHeroesNFT = new NFT(
-  new NFTShape("ethereum://" + data[5].address),
-  new Transform({
-    position: new Vector3(-5, 2.5, 40),
-    scale: new Vector3(4, 4, 4),
-  }),
-  new Color3(1.25, 1.25, 1.25),
-  data[5].id,
-  infoPanel
-)
-myCryptoHeroesNFT.getComponent(Transform).scale.setAll(0)
-
-const nfts: NFT[] = [makersPlaceNFT, cryptoKittiesNFT, knownOriginNFT, axieInfinityNFT, chainGuardiansNFT, myCryptoHeroesNFT]
-const swapNFTEntity = new Entity()
-
-// NOTE: Using the scale instead of the visibility to turn the NFT on / off 
-// as there are issues with the colliders getting in the way of each other
-// when the user tries to click on an NFT to get more information...
-swapNFTEntity.addComponent(
-  new utils1.Interval(8000, () => {
-    for (let i = 0; i < nfts.length; i++) {
-      if (nfts[i].getComponent(Transform).scale.x == 0) {
-        nfts[i]
-        .getComponent(Transform)
-        .scale.set(
-          nfts[i].originalScale.x,
-          nfts[i].originalScale.y,
-          nfts[i].originalScale.z
-        )
-      } else {
-        nfts[i].getComponent(Transform).scale.setAll(0)
-      }
-    }
-  })
-)
-engine.addEntity(swapNFTEntity)
-
-//-----------------------------------------------------------NFT wall ends----------------------------------------------------
-
-//---------------------------------------------------------- piano starts----------------------------------------------
 
 // Base scene
 const baseScene1 = new Entity()
@@ -641,70 +363,7 @@ const whiteKeySounds: AudioClip[] = [
 
 let whiteKeyXPos = -5.55
 
-for (let i = 0; i < whiteKeySounds.length; i++) {
-  const key = new PianoKey(
-    keyShape,
-    new Transform({
-      position: new Vector3(whiteKeyXPos, 0.11, 0),
-      scale: new Vector3(0.7, 4, 0.5),
-      rotation: Quaternion.Euler(90, 0, 0)
-    }),
-    Color3.White(),
-    whiteKeySounds[i],
-    resources.trigger.triggerWhitePianoKey,
-    i
-  )
-  key.setParent(scene)
-  keys.push(key)
-  whiteKeyXPos += 0.8
-}
 
-// Black keys
-const blackKeySounds: AudioClip[] = [
-  resources.sounds.blackKeys.cSharp3,
-  resources.sounds.blackKeys.dSharp3,
-  resources.sounds.blackKeys.fSharp3,
-  resources.sounds.blackKeys.gSharp3,
-  resources.sounds.blackKeys.aSharp3,
-  resources.sounds.blackKeys.cSharp4,
-  resources.sounds.blackKeys.dSharp4,
-  resources.sounds.blackKeys.fSharp4,
-  resources.sounds.blackKeys.gSharp4,
-  resources.sounds.blackKeys.aSharp4
-]
-
-let blackKeyXPos = -5.15
-let skipKey = 1
-
-for (let i = 0; i < blackKeySounds.length; i++) {
-  const key = new PianoKey(
-    keyShape,
-    new Transform({
-      position: new Vector3(blackKeyXPos, 0.12, 1),
-      scale: new Vector3(0.45, 2, 0.5),
-      rotation: Quaternion.Euler(90, 0, 0)
-    }),
-    Color3.Black(),
-    blackKeySounds[i],
-    resources.trigger.triggerBlackPianoKey,
-    i + whiteKeySounds.length
-  )
-  key.setParent(scene)
-  keys.push(key)
-
-  // Skip key
-  skipKey++
-  skipKey % 3 !== 0 ? (blackKeyXPos += 0.8) : (blackKeyXPos += 1.6)
-  if (skipKey === 6) skipKey = 1
-}
-
-// Modify player's trigger shape
-utils.TriggerSystem.instance.setCameraTriggerShape(
-  new utils.TriggerBoxShape(
-    new Vector3(0.5, 0.25, 0.5),
-    new Vector3(0, -0.5, 0)
-  )
-)
 
 //-----------------------------------------------------------------piano ends---------------------------------------------------
 
@@ -879,14 +538,6 @@ const triggerBoxShape = new utils.TriggerBoxShape(
   new Vector3(0, 1, 0)
 ) // Trigger shape for coin
 
-// Setup the coins
-for (const coinPosition of coinPositions) {
-  createCoin(
-    coinShape,
-    new Transform({ position: coinPosition }),
-    triggerBoxShape
-  )
-}
 
 //----------------------------------------------------FlipKartCoin CollectionGame ends-----------------------------------------------------
 
